@@ -1,0 +1,3 @@
+class FluttersConfiguration {}
+
+class FluttersState {}
