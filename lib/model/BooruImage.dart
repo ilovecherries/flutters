@@ -19,8 +19,34 @@ class BooruImageRepresentation {
 
   BooruImageRepresentation(this.full, this.large, this.medium, this.small,
       this.tall, this.thumb, this.thumbSmall, this.thumbTiny);
+
+  factory BooruImageRepresentation.fromJson(dynamic json) {
+    return BooruImageRepresentation(
+        json['full'] as String,
+        json['large'] as String,
+        json['medium'] as String,
+        json['small'] as String,
+        json['tall'] as String,
+        json['thumb'] as String,
+        json['thumb_small'] as String,
+        json['thumb_tiny'] as String);
+  }
 }
 
+// TODO: We need to make this a base class which other types derive off
+// of because Derpibooru and PonerPics, for example, are incompatible with
+// how they store favourites
+//
+// For example, Derpibooru stores favourites as "faves" while PonerPics stores
+// imported and internal favourites as "legacy_faves", "derpi_faves" and
+// "combined_faves".
+//
+// If we make one for PonerPics, then we could just make "faves" as a
+// getter that outputs "combined_faves" for rendering purposes and keep
+// "derpi_faves" in a separate tag that will indicate to render that.
+//
+// For /now/, this will only support Derpibooru until altboorus become a
+// priority (which they will become, since I prefer them)
 class BooruImage {
   /// Whether the image is animated.
   final bool animated;
@@ -55,7 +81,7 @@ class BooruImage {
   final int faves;
 
   /// The time, in UTC, the image was first seen (before any duplicate merging).
-  final String firstSeenAt;
+  final DateTime firstSeenAt;
 
   /// The file extension of the image. One of "gif", "jpg", "jpeg", "png",
   /// "svg", "webm".
@@ -140,7 +166,7 @@ class BooruImage {
   final int width;
 
   /// The lower bound of the Wilson score interval for the image, based on its
-  /// upvotes and downvotes, given a z-score corresponding to a confidence of 
+  /// upvotes and downvotes, given a z-score corresponding to a confidence of
   /// 99.5%.
   final double wilsonScore;
 
@@ -148,8 +174,8 @@ class BooruImage {
       this.animated,
       this.aspectRatio,
       this.commentCount,
-      this.deletionReason,
       this.createdAt,
+      this.deletionReason,
       this.description,
       this.downvotes,
       this.duplicateOf,
@@ -180,5 +206,48 @@ class BooruImage {
       this.uploaderId,
       this.upvotes,
       this.width,
-      this.wilsonScore, this.viewURL);
+      this.wilsonScore,
+      this.viewURL);
+
+  factory BooruImage.fromJson(dynamic json) {
+    return BooruImage(
+        json['animated'] as bool,
+        json['aspect_ratio'] as double,
+        json['comment_count'] as int,
+        DateTime.parse(json['created_at'] as String),
+        json['deletion_reason'] as String?,
+        json['description'] as String,
+        json['downvotes'] as int,
+        json['duplicateOf'] as int?,
+        json['duration'] as double,
+        json['faves'] as int,
+        DateTime.parse(json['firstSeenAt'] as String),
+        json['format'] as String,
+        json['height'] as int,
+        json['hidden_from_users'] as bool,
+        json['id'] as int,
+        // TODO: need to convert intensities if they are non-null
+        null, // intensities,
+        json['mime_type'] as String,
+        json['name'] as String,
+        json['orig_sha512_hash'] as String,
+        json['processed'] as bool,
+        BooruImageRepresentation.fromJson(json['representations']),
+        json['score'] as int,
+        json['sha512_hash'] as String,
+        json['size'] as int,
+        json['source_url'] as String,
+        json['spoilered'] as bool,
+        json['tag_count'] as int,
+        json['tag_ids'] as List<int>,
+        json['tags'] as List<String>,
+        json['thumbnails_generated'] as bool,
+        DateTime.parse(json['updated_at'] as String),
+        json['uploader'] as String,
+        json['uploader_id'] as int?,
+        json['upvotes'] as int,
+        json['width'] as int,
+        json['wilson_score'] as double,
+        json['view_url'] as String);
+  }
 }
