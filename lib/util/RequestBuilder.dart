@@ -1,10 +1,9 @@
 import 'dart:convert';
 
-import 'package:brotli/brotli.dart';
 import 'package:flutters/model/BooruImage.dart';
-import 'package:http/http.dart' show BaseClient, Client, Request, Response;
-import 'package:http/src/streamed_response.dart';
-import 'package:http/src/base_request.dart';
+import 'package:http/http.dart'
+    show BaseClient, Client, Request, Response, BaseRequest, StreamedResponse;
+// import 'package:es_compression/brotli.dart';
 
 class BooruHTTPClient extends BaseClient {
   final String userAgent = 'flutters/0.0';
@@ -35,17 +34,21 @@ class BooruHTTPClient extends BaseClient {
     final resp = await Response.fromStream(await send(request));
     final encoding = resp.headers['content-encoding'];
     print('encoding: $encoding'); //gzip, zlib already covered by http.dart
-    String respBody;
-    switch (encoding) {
-      case 'br':
-        respBody = utf8.decode(brotli.decodeToString(resp.bodyBytes).codeUnits);
-        break;
-      default:
-        respBody = resp.body;
-    }
+    String respBody = resp.body;
+
+    // FIXME: This is commented out because the Linux brotli library is not
+    // available for es_compression for some reason...
+    // switch (encoding) {
+    //   case 'br':
+    //     // respBody = utf8.decode(brotli.decodeToString(resp.bodyBytes).codeUnits);
+    //     respBody = utf8.decode(brotli.decode(resp.bodyBytes));
+    //     break;
+    //   default:
+    //     respBody = resp.body;
+    // }
 
     final json = jsonDecode(respBody);
-    final image = BooruImage.fromJson(json);
+    final image = BooruImage.fromJson(json['image']);
 
     return image;
   }

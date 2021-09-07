@@ -109,7 +109,7 @@ class BooruImage {
   final String name;
 
   /// The SHA512 hash of the image as it was originally uploaded.
-  final String origSha512Hash;
+  final String? origSha512Hash;
 
   /// Whether the image has finished optimization.
   final bool processed;
@@ -151,7 +151,7 @@ class BooruImage {
   final DateTime updatedAt;
 
   /// The image's uploader.
-  final String uploader;
+  final String? uploader;
 
   /// The ID of the image's uploader. null if uploaded anonymously.
   final int? uploaderId;
@@ -221,7 +221,7 @@ class BooruImage {
         json['duplicateOf'] as int?,
         json['duration'] as double,
         json['faves'] as int,
-        DateTime.parse(json['firstSeenAt'] as String),
+        DateTime.parse(json['first_seen_at'] as String),
         json['format'] as String,
         json['height'] as int,
         json['hidden_from_users'] as bool,
@@ -230,7 +230,7 @@ class BooruImage {
         null, // intensities,
         json['mime_type'] as String,
         json['name'] as String,
-        json['orig_sha512_hash'] as String,
+        json['orig_sha512_hash'] as String?,
         json['processed'] as bool,
         BooruImageRepresentation.fromJson(json['representations']),
         json['score'] as int,
@@ -239,11 +239,11 @@ class BooruImage {
         json['source_url'] as String,
         json['spoilered'] as bool,
         json['tag_count'] as int,
-        json['tag_ids'] as List<int>,
-        json['tags'] as List<String>,
+        json['tag_ids'].cast<int>() as List<int>,
+        json['tags'].cast<String>() as List<String>,
         json['thumbnails_generated'] as bool,
         DateTime.parse(json['updated_at'] as String),
-        json['uploader'] as String,
+        json['uploader'] as String?,
         json['uploader_id'] as int?,
         json['upvotes'] as int,
         json['width'] as int,
