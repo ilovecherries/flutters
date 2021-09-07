@@ -5,6 +5,11 @@ class BooruImageIntensities {
   final double sw;
 
   BooruImageIntensities(this.ne, this.nw, this.se, this.sw);
+
+  factory BooruImageIntensities.fromJson(dynamic json) {
+    return BooruImageIntensities(json['ne'] as double, json['nw'] as double,
+        json['se'] as double, json['sw'] as double);
+  }
 }
 
 class BooruImageRepresentation {
@@ -227,7 +232,9 @@ class BooruImage {
         json['hidden_from_users'] as bool,
         json['id'] as int,
         // TODO: need to convert intensities if they are non-null
-        null, // intensities,
+        json['intensities'] != null
+            ? BooruImageIntensities.fromJson(json['intensities'])
+            : null, // intensities,
         json['mime_type'] as String,
         json['name'] as String,
         json['orig_sha512_hash'] as String?,
