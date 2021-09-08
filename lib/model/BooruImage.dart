@@ -38,20 +38,6 @@ class BooruImageRepresentation {
   }
 }
 
-// TODO: We need to make this a base class which other types derive off
-// of because Derpibooru and PonerPics, for example, are incompatible with
-// how they store favourites
-//
-// For example, Derpibooru stores favourites as "faves" while PonerPics stores
-// imported and internal favourites as "legacy_faves", "derpi_faves" and
-// "combined_faves".
-//
-// If we make one for PonerPics, then we could just make "faves" as a
-// getter that outputs "combined_faves" for rendering purposes and keep
-// "derpi_faves" in a separate tag that will indicate to render that.
-//
-// For /now/, this will only support Derpibooru until altboorus become a
-// priority (which they will become, since I prefer them)
 class BooruImage {
   /// Whether the image is animated.
   final bool animated;
@@ -134,7 +120,7 @@ class BooruImage {
   final int size;
 
   /// The current source URL of the image.
-  final String sourceURL;
+  final String? sourceURL;
 
   /// Whether the image is hit by the current filter.
   final bool spoilered;
@@ -173,7 +159,19 @@ class BooruImage {
   /// The lower bound of the Wilson score interval for the image, based on its
   /// upvotes and downvotes, given a z-score corresponding to a confidence of
   /// 99.5%.
-  final double wilsonScore;
+  final num wilsonScore;
+
+  final int? legacyFaves;
+
+  final int? derpiFaves;
+
+  final int? combinedFaves;
+
+  final int? legacyScore;
+
+  final int? derpiScore;
+
+  final int? combinedScore;
 
   BooruImage(
       this.animated,
@@ -212,9 +210,19 @@ class BooruImage {
       this.upvotes,
       this.width,
       this.wilsonScore,
-      this.viewURL);
+      this.viewURL,
+      this.legacyFaves,
+      this.derpiFaves,
+      this.combinedFaves,
+      this.legacyScore,
+      this.derpiScore,
+      this.combinedScore);
 
   factory BooruImage.fromJson(dynamic json) {
+    // legacy faves is one of the properties that altboorus like
+    // ponerpics has
+    final alt = json['legacy_faves'] != null;
+
     return BooruImage(
         json['animated'] as bool,
         json['aspect_ratio'] as double,
@@ -231,7 +239,6 @@ class BooruImage {
         json['height'] as int,
         json['hidden_from_users'] as bool,
         json['id'] as int,
-        // TODO: need to convert intensities if they are non-null
         json['intensities'] != null
             ? BooruImageIntensities.fromJson(json['intensities'])
             : null, // intensities,
@@ -243,7 +250,7 @@ class BooruImage {
         json['score'] as int,
         json['sha512_hash'] as String,
         json['size'] as int,
-        json['source_url'] as String,
+        json['source_url'] as String?,
         json['spoilered'] as bool,
         json['tag_count'] as int,
         json['tag_ids'].cast<int>() as List<int>,
@@ -254,7 +261,14 @@ class BooruImage {
         json['uploader_id'] as int?,
         json['upvotes'] as int,
         json['width'] as int,
-        json['wilson_score'] as double,
-        json['view_url'] as String);
+        json['wilson_score'] as num,
+        json['view_url'] as String,
+        // altbooru properties
+        alt ? json['legacy_faves'] as int : null,
+        alt ? json['derpi_faves'] as int : null,
+        alt ? json['combined_faves'] as int : null,
+        alt ? json['legacy_score'] as int : null,
+        alt ? json['derpi_score'] as int : null,
+        alt ? json['combined_score'] as int : null);
   }
 }

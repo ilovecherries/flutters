@@ -10,11 +10,14 @@ class ExampleScreen extends StatelessWidget {
     final http = BooruHTTPClient(Client());
 
     return Scaffold(
-        body: FutureBuilder<BooruImage>(
-      future: http.getImageById(2606782),
-      builder: (BuildContext context, AsyncSnapshot<BooruImage> snapshot) {
+        body: FutureBuilder<List<BooruImage>>(
+      future: http.searchImages([]),
+      builder:
+          (BuildContext context, AsyncSnapshot<List<BooruImage>> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return Entry(snapshot.data!);
+          return ListView(
+            children: snapshot.data!.map((e) => new Entry(e)).toList(),
+          );
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return Text("data");
         } else {

@@ -5,12 +5,17 @@ import 'package:http/http.dart'
     show BaseClient, Client, Request, Response, BaseRequest, StreamedResponse;
 // import 'package:es_compression/brotli.dart';
 
+final defaultBoorus = [
+  'www.derpibooru.org',
+  'www.ponerpics.org',
+  'www.twibooru.org',
+];
+
 class BooruHTTPClient extends BaseClient {
   final String userAgent = 'flutters/0.0';
-  final String acceptEncoding = 'gzip, br';
+  final String acceptEncoding = 'gzip';
   final Client _inner;
-  // TODO: this is fucking awful, this will be bad when we have altboorus
-  final String host = 'www.derpibooru.org';
+  final String host = defaultBoorus[0];
   String get referer => "https://$host/";
   final String apiPath = 'api/v1/json';
 
@@ -36,20 +41,31 @@ class BooruHTTPClient extends BaseClient {
     print('encoding: $encoding'); //gzip, zlib already covered by http.dart
     String respBody = resp.body;
 
-    // FIXME: This is commented out because the Linux brotli library is not
-    // available for es_compression for some reason...
-    // switch (encoding) {
-    //   case 'br':
-    //     // respBody = utf8.decode(brotli.decodeToString(resp.bodyBytes).codeUnits);
-    //     respBody = utf8.decode(brotli.decode(resp.bodyBytes));
-    //     break;
-    //   default:
-    //     respBody = resp.body;
-    // }
-
     final json = jsonDecode(respBody);
     final image = BooruImage.fromJson(json['image']);
 
     return image;
+  }
+
+  Future<List<BooruImage>> searchImages(List<String> tags,
+      [int page = 0]) async {
+    // this is a nice default value
+    if (tags.isEmpty) {
+      tags.add('safe');
+    }
+
+    final tagString = tags.join(',');
+    final uri = Uri.parse("$api/search/images/?p=$page&q=$tagString");
+    final request = Request('GET', uri);
+
+    final resp = await Response.fromStream(await send(request));
+    final encoding = resp.headers['content-encoding'];
+    print('encoding: $encoding'); //gzip, zlib already covered by http.dart
+    String respBody = resp.body;
+
+    final json = jsonDecode(respBody)['images'] as List<dynamic>;
+    final images = json.map((i) => BooruImage.fromJson(i)).toList();
+
+    return images;
   }
 }
