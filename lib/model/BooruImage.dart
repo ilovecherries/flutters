@@ -25,16 +25,16 @@ class BooruImageRepresentation {
   BooruImageRepresentation(this.full, this.large, this.medium, this.small,
       this.tall, this.thumb, this.thumbSmall, this.thumbTiny);
 
-  factory BooruImageRepresentation.fromJson(dynamic json) {
+  factory BooruImageRepresentation.fromJson(dynamic json, [String url = '']) {
     return BooruImageRepresentation(
-        json['full'] as String,
-        json['large'] as String,
-        json['medium'] as String,
-        json['small'] as String,
-        json['tall'] as String,
-        json['thumb'] as String,
-        json['thumb_small'] as String,
-        json['thumb_tiny'] as String);
+        "$url${json['full'] as String}",
+        "$url${json['large'] as String}",
+        "$url${json['medium'] as String}",
+        "$url${json['small'] as String}",
+        "$url${json['tall'] as String}",
+        "$url${json['thumb'] as String}",
+        "$url${json['thumb_small'] as String}",
+        "$url${json['thumb_tiny'] as String}");
   }
 }
 
@@ -218,7 +218,7 @@ class BooruImage {
       this.derpiScore,
       this.combinedScore);
 
-  factory BooruImage.fromJson(dynamic json) {
+  factory BooruImage.fromJson(dynamic json, [String url = '']) {
     // legacy faves is one of the properties that altboorus like
     // ponerpics has
     final alt = json['legacy_faves'] != null;
@@ -246,7 +246,7 @@ class BooruImage {
         json['name'] as String,
         json['orig_sha512_hash'] as String?,
         json['processed'] as bool,
-        BooruImageRepresentation.fromJson(json['representations']),
+        BooruImageRepresentation.fromJson(json['representations'], url),
         json['score'] as int,
         json['sha512_hash'] as String,
         json['size'] as int,

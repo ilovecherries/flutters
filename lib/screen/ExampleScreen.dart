@@ -6,7 +6,7 @@ import 'package:flutters/widget/Entry.dart';
 class ExampleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final booru = BooruHTTPClient('www.derpibooru.org', false);
+    final booru = BooruHTTPClient('www.ponerpics.org', true);
 
     return Scaffold(
         body: FutureBuilder<List<BooruImage>>(
