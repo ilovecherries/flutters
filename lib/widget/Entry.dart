@@ -8,7 +8,6 @@ class Entry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('HELLO???');
     return Container(
       child:
           Image.network(image.representations.thumbSmall, fit: BoxFit.contain),
