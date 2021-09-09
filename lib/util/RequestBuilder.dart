@@ -16,6 +16,7 @@ class BooruHTTPClient extends BaseClient {
   final String acceptEncoding = 'gzip';
   final Client _inner;
   final String host = defaultBoorus[0];
+  String get favicon => 'https://s2.googleusercontent.com/s2/favicons?domain=$host';
   String get referer => "https://$host/";
   final String apiPath = 'api/v1/json';
 
