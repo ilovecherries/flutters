@@ -53,14 +53,13 @@ class BooruHTTPClient extends BaseClient {
   }
 
   Future<List<BooruImage>> searchImages(List<String> tags,
-      [int page = 0]) async {
+      [int page = 1]) async {
     // this is a nice default value
     if (tags.isEmpty) {
       tags.add('safe');
     }
 
-    final tagString = tags.join(',');
-    final json = await getJSON("search/images/?p=$page&q=$tagString");
+    final json = await getJSON("search/images/?page=$page&q=${tags.join(',')}");
     final data = json['images'] as List<dynamic>;
     final url = relativeURLPathing ? 'https://$host' : '';
     final images = data.map((i) => BooruImage.fromJson(i, url)).toList();

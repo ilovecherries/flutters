@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutters/screen/ExampleScreen.dart';
+import 'package:flutters/screen/HomeScreen.dart';
 import 'package:flutters/util/RequestBuilder.dart';
 import 'package:http/http.dart';
 
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: ExampleScreen(),
+      body: HomeScreen(),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
