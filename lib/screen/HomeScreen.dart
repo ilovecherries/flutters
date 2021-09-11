@@ -33,7 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PagedListView<int, BooruImage>(
+  Widget build(BuildContext context) => PagedGridView<int, BooruImage>(
+      gridDelegate:
+          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
       pagingController: _pagingController,
       builderDelegate: PagedChildBuilderDelegate<BooruImage>(
           itemBuilder: (context, item, index) => Entry(item)));
